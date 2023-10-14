@@ -63,14 +63,14 @@
                     @if (App\Http\Controllers\ticketController::tickets($movie->id))
                         <label class="p-2" title=""><i class="bi bi-ticket-fill" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
                         <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill" style="color: #3287cc"></a>
-                        @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
+                        {{-- @if (App\Http\Controllers\ticketController::ticketTime($movie->title)) --}}
                             <a href="/cancelTicket/{{$movie->id}}/welcome" title="Cancel Ticket" class="bi bi-x-circle-fill" style="color: #ec7168"> Cancel Ticket</a>
-                        @endif
+                        {{-- @endif --}}
                     @else
                         <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                        @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
+                        {{-- @if (App\Http\Controllers\ticketController::ticketTime($movie->title)) --}}
                             <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
-                        @endif
+                        {{-- @endif --}}
                     @endif
                 @else
                 <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
