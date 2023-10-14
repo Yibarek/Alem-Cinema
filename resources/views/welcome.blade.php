@@ -38,7 +38,7 @@
         <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
             <h1 class="heroh1" style="color: #1a69aa; font-size: 70px;">Welcome to Cinema Rukiya</h1>
             <h3 style="color: #1a69aa;">Buy tickets online. Have special time with our movies.</h3>
-          <div data-aos="fade-up" data-aos-delay="800">
+          <div data-aos="fade-up" data-aos-delay="7">
             <a href="#portfolio" class="btn-get-started scrollto">Movies <i class="bx bx-chevrons-down"></i></a>
           </div>
         </div>
