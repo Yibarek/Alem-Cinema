@@ -29,15 +29,14 @@
       <div class="container">
 
         <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-          <h2 class="d-flex">Coupons
-            @if (Auth::user()->role == 'Admin')
-                <a title="Add New User" class="ml-2 d-flex" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
-                    <i class="" style="color: #fff">A</i>
-                    <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                    </div>
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="mb-0">Categories</h2>
+            @if (Auth::user()->role == 'Admin' || Auth::user()->role == 'Multimedia Specialist')
+                <a title="Add New Category" class="get-btn btn-sm d-inline-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
+                    <i class="bi bi-plus-lg"></i> Add New Category
                 </a>
             @endif
-          </h2>
+          </div>
           <ol>
             <li><a href="/">Home</a></li>
             <li>Catagory</li>
@@ -86,15 +85,14 @@
                       <td >{{ $catagory->name }}</td>
                       <td>{{ $catagory->description }}</td>
                       <td>
-                        @if (Auth::user()->role == "Multimedia Specialist")
-                        {{-- @if (Auth::user()->role == "Admin" && $catagory->role != 'Admin') --}}
+                        @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
                         <a href="#" data-bs-toggle="modal" data-bs-target="#viewcatagory{{$catagory->id}}" title="Edit Catagory"
-                          style="border:none; border-radius:4px; text-decoration: none; height: 25px; margin-right: 8px;"
-                          class="get-btn  btn-sm pr-2 pl-2 bx bx-show"></a>
+                          style="border:none; border-radius:6px; text-decoration: none; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px;"
+                          class="get-btn btn-sm bx bx-show"></a>
 
-                          <a href="deleteCatagory/{{$catagory->id}}" title="Delete Coupon"
+                          <a href="deleteCatagory/{{$catagory->id}}" title="Delete Catagory"
                               class="btn btn-danger btn-sm bi bi-trash-fill"
-                              style="height: 25px;"
+                              style="border:none; border-radius:6px; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
                               onclick="return deleteCatagory();"></a>
                         @endif
 

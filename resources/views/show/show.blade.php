@@ -28,13 +28,10 @@
     <section class="breadcrumbs">
       <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-          <h2 class="d-flex">Show
-            @if (Auth::user()->role == 'Multimedia Specialist')
-                <a title="Add New User" class="ml-2 d-flex" href="#" data-bs-toggle="modal" data-bs-target="#addShow">
-                    <i class="" style="color: #fff">A</i>
-                    <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                    </div>
+          <h2 class="d-flex align-items-center">Shows
+            @if (Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin')
+                <a title="Add New Show" class="get-btn btn-sm d-inline-flex align-items-center gap-2 ms-3" style="border-radius: 50px; padding: 6px 16px; font-size: 13.5px; font-weight: 700; text-decoration: none;" href="#" data-bs-toggle="modal" data-bs-target="#addShow">
+                    <i class="bi bi-plus-lg" style="font-size: 14px; font-weight: 800;"></i> Add New Show
                 </a>
             @endif
           </h2>
@@ -70,7 +67,7 @@
                     <th style="width: 5%" scope="col">Normal</th>
                     {{-- <th style="width: 10%" scope="col">Up Comming</th> --}}
 
-                    @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Multimedia Specialist")
+                    @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
                       <th style="width: 8%" scope="col">Action</th>
                     @endif
 
@@ -84,7 +81,7 @@
 
                   @foreach ($shows as $show)
 
-                  @if (Auth::user()->role == 'Multimedia Specialist')
+                  @if (Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin')
                     <tr>
                       <th scope="row">{{++$no}}</th>
                       <td >{{ $show->movie }}</td>
@@ -96,15 +93,14 @@
                       {{-- <td >{{ $show->max_normal_place_no }}</td> --}}
                       {{-- <td style="text-align: center;"><input  class="form-check-input"  type="checkbox" name ="upcomming" id ="upcomming" @if($show->status == 'upcomming') selected @endif value="{{$show->status}}"></td> --}}
                       <td>
-                        @if (Auth::user()->role == "Multimedia Specialist")
-                        {{-- @if (Auth::user()->role == "Admin" && $catagory->role != 'Admin') --}}
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewcatagory{{$show->id}}" title="Edit Catagory"
-                          style="border:none; border-radius:4px; text-decoration: none; height: 25px; margin-right: 8px;"
-                          class="get-btn  btn-sm pr-2 pl-2 bx bx-show"></a>
+                        @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewcatagory{{$show->id}}" title="Edit Show"
+                          style="border:none; border-radius:6px; text-decoration: none; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px;"
+                          class="get-btn btn-sm bx bx-show"></a>
 
-                          <a href="deleteShow/{{$show->id}}" title="Delete Catagory"
+                          <a href="deleteShow/{{$show->id}}" title="Delete Show"
                               class="btn btn-danger btn-sm bi bi-trash-fill"
-                              style="height: 25px;"
+                              style="border:none; border-radius:6px; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
                               onclick="return deleteShow();"></a>
                         @endif
 

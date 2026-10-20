@@ -20,7 +20,7 @@ class catagoryController extends Controller
 
     public function addCatagory(Request $request)
     {
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $return_code = DB::table('catagories')->insertOrIgnore([
                 'name'=>$request->name,
@@ -47,7 +47,7 @@ class catagoryController extends Controller
         $no=0;
         foreach ($catagories as $catagory) {
             $no++;
-            if(Auth::user()->role == "Multimedia Specialist"){
+            if(Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin"){
                 $output .= '<tr>
                 <td>'. $no.'</td>
                 <td>'. $catagory->name.'</td>
@@ -70,7 +70,7 @@ class catagoryController extends Controller
 
     public function updateCatagory(Request $request, $catagory_id)
     {
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $return_code = DB::table('catagories')->where('id', $catagory_id)->update([
                 'name'=>$request->name,
@@ -90,7 +90,7 @@ class catagoryController extends Controller
 
     function deleteCatagory($id){
 
-        if (Auth::user()->role =='Multimedia Specialist') {
+        if (Auth::user()->role =='Multimedia Specialist' || Auth::user()->role == 'Admin') {
             $return_code=0;
             $return_code = DB::table('catagories')->where('id', $id)->delete();
             if ($return_code == 1) {

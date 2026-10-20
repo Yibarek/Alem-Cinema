@@ -13,8 +13,8 @@
 
             <div class="d-flex justify-content-center py-4">
               <a href="/" class="logo d-flex align-items-center w-auto">
-                <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Cinema Rukiya</span>
+                <img src="assets/img/logo.svg" alt="Alem Cinema" style="height: 42px;">
+                <span class="d-none d-lg-block" style="color: #f59e0b; font-weight: 700; margin-left: 8px;">Alem Cinema</span>
               </a>
             </div><!-- End Logo -->
 
@@ -66,10 +66,7 @@
                     @endif
                   </div>
                   <div class="col-12">
-                    <button class="btn w-100 get-btn"
-                        style="background-color: #388fb8;
-                                color: #fff;
-                               border: solid 1px #388fb8;" type="submit">Login</button>
+                    <button class="btn w-100 get-btn" style="border-radius: 50px; padding: 12px;" type="submit">Login</button>
                   </div>
                   <div class="col-12">
                     <p class="small mb-0">Don't have account?

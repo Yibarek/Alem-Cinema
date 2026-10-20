@@ -25,7 +25,7 @@ class ticketController extends Controller
 
     public function createTicket(Request $request)
     {
-        if(Auth::user()->role == 'Ticket Controller'){
+        if(Auth::user()->role == 'Ticket Controller' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $return_code = DB::table('tickets')->insertOrIgnore([
                 'user'=>$request->user,
@@ -49,7 +49,7 @@ class ticketController extends Controller
 
     public function updateTicket(Request $request, $coupon_id)
     {
-        if(Auth::user()->role == 'Ticket Controller'){
+        if(Auth::user()->role == 'Ticket Controller' || Auth::user()->role == 'Admin'){
             $coupon = DB::table('coupons')->where('id', $coupon_id)->first();
             $return_code=0;
             $return_code = DB::table('coupons')->where('id', $coupon_id)->update([
@@ -79,7 +79,7 @@ class ticketController extends Controller
 
     function deleteTicket($id){
 
-        if (Auth::user()->role =='Ticket Controller') {
+        if (Auth::user()->role =='Ticket Controller' || Auth::user()->role == 'Admin') {
             $return_code=0;
             $return_code = DB::table('tickets')->where('id', $id)->delete();
             if ($return_code == 1) {
@@ -164,11 +164,133 @@ class ticketController extends Controller
     // }
 
     public function buyTicket($movie, Request $request){
-        return view("accessX");
+        $ticketValue = DB::table('movies')->where('id', $movie)->first();
+        if (!$ticketValue) {
+            return redirect('/movie')->with('danger', 'Movie not found.');
+        }
+
+        if (!$request->inputSelected || $request->inputSelected <= 0 || !$request->inputCosts || $request->inputCosts <= 0) {
+            return redirect('/seats/' . $movie)->with('danger', 'Please select at least one seat before confirming your booking.');
+        }
+
+        $accountValue = DB::table('users')->where('id', Auth::user()->id)->first();
+        $account = $accountValue->account;
+
+        if ($account < $request->inputCosts) {
+            return redirect('/seats/' . $movie)->with('danger', 'Insufficient funds in your account. You need ' . $request->inputCosts . ' ETB but have ' . $account . ' ETB.');
+        }
+
+        $z = 1;
+        $chairs = "";
+        $hasVip = false;
+        $hasNormal = false;
+        for ($i = 1; $i <= 16; $i++) {
+            for ($j = 1; $j <= 16; $j++) {
+                $zz = "in" . $z;
+                $seatType = ($z <= 32) ? 'vip' : 'normal';
+
+                if ($request->$zz == $z) {
+                    if ($seatType === 'vip') {
+                        $hasVip = true;
+                    } else {
+                        $hasNormal = true;
+                    }
+
+                    DB::table('seats')->insertOrIgnore([
+                        'user' => Auth::user()->username,
+                        'movie' => $movie,
+                        'seat' => $z,
+                        'type' => $seatType,
+                    ]);
+
+                    $chairs .= "$z, ";
+                }
+                $z++;
+            }
+        }
+
+        $chairs = rtrim($chairs, ', ');
+
+        $ticketType = 'normal';
+        if ($hasVip && $hasNormal) {
+            $ticketType = 'vip, normal';
+        } elseif ($hasVip) {
+            $ticketType = 'vip';
+        }
+
+        $return_code = DB::table('tickets')->insert([
+            'user' => Auth::user()->username,
+            'movie' => $movie,
+            'type' => $ticketType,
+            'place_no' => $request->inputSelected,
+            'chairs' => $chairs,
+            'amount' => $request->inputCosts,
+            'created_at' => new DateTime(),
+        ]);
+
+        if ($return_code) {
+            $account = $account - $request->inputCosts;
+            DB::table('users')->where('id', Auth::user()->id)->update([
+                'account' => $account
+            ]);
+
+            $ticket_mov = $ticketValue->tickets + $request->inputSelected;
+            DB::table('movies')->where('id', $movie)->update([
+                'tickets' => $ticket_mov,
+            ]);
+
+            return redirect('/detailM/' . $movie)->with('success', 'You bought ' . $request->inputSelected . ' ticket(s) successfully! Thanks for choosing Alem Cinema.');
+        } else {
+            return redirect('/detailM/' . $movie)->with('danger', 'Unable to complete your ticket booking. Please try again later.');
+        }
     }
 
     public function cancelTicket($movie, $page){
-        return view("accessX");
+        $show = DB::table('movies')->where('id', $movie)->first();
+        $show_time = $show->show_date." ". $show->show_time;
+        if ((strtotime($show_time) - strtotime("now")) > 10800) {
+            $return_code=0;
+            $account=0;
+            $ticket=0;
+            $ticketValue = DB::table('movies')->where('id', $movie)->first();
+            $accountValue = DB::table('users')->where('username', Auth::user()->username)->first();
+
+            if (DB::table('tickets')->where('user', Auth::user()->username)->where('movie', $movie)->count() == 0) {
+                return redirect('/detailM'.'/'.$movie)->with('danger', 'You already cancelled the ticket.');
+            } else {
+                $tickets = DB::table('tickets')->where('user', Auth::user()->username)->where('movie', $movie)->first();
+                $account = $accountValue->account;
+                $ticket = $tickets->amount;
+                $minus = $ticket * 0.05;
+
+                $account = $account + ($ticket - $minus);
+                DB::table('users')->where('id', Auth::user()->id)->update([
+                    'account' =>$account
+                ]);
+                $return_code = DB::table('tickets')->where('user', Auth::user()->username)->where('movie', $movie)->delete();
+
+                if ($return_code == 1) {
+                    DB::table('seats')->where('user', Auth::user()->username)->where('movie', $movie)->delete();
+                    $MOV_ticket = DB::table('movies')->where('id', $movie)->first();
+                    $ticket = 0;
+                    if ($MOV_ticket->tickets > 0) {
+                        $ticket = $MOV_ticket->tickets - 1;
+                    }
+                    else {
+                        $ticket = 0;
+                    }
+                    DB::table('movies')->where('id', $movie)->update([
+                        'tickets' =>$ticket
+                    ]);
+                    return redirect('/detailM'.'/'.$movie)->with('success', 'Ticket cancellation done successfully!');
+                }
+                else{
+                    return redirect('/detailM'.'/'.$movie)->with('danger', 'Unable to cancel the ticket!');
+                }
+            }
+        } else {
+            return redirect('/detailM'.'/'.$movie)->with('danger', "Unable to cancel the ticket! You can cancel your ticket ONLY 3 hours before Show time.");
+        }
     }
 
     function searchTicket($input){

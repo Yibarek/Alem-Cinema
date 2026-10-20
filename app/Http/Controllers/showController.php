@@ -21,7 +21,7 @@ class showController extends Controller
 
     public function addShow(Request $request)
     {
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $return_code = DB::table('shows')->insertOrIgnore([
                 'movie'=>$request->selectVal,
@@ -53,7 +53,7 @@ class showController extends Controller
 
     public function updateShow(Request $request, $show_id)
     {
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $return_code = DB::table('shows')->where('id', $show_id)->update([
                 'movie'=>$request->selectVal,
@@ -84,7 +84,7 @@ class showController extends Controller
 
     function deleteShow($id){
 
-        if (Auth::user()->role =='Multimedia Specialist') {
+        if (Auth::user()->role =='Multimedia Specialist' || Auth::user()->role == 'Admin') {
             $return_code=0;
             $return_code = DB::table('shows')->where('id', $id)->delete();
             if ($return_code == 1) {
@@ -111,7 +111,7 @@ class showController extends Controller
         $no=0;
         foreach ($Shows as $Show) {
             $no++;
-            if(Auth::user()->role == "Multimedia Specialist"){
+            if(Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin"){
                 $output .= '<tr>
                 <td>'. $no.'</td>
                 <td>'. $Show->movie.'</td>

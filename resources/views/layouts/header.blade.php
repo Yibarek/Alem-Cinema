@@ -16,9 +16,9 @@
 {{-- <div class="container d-flex align-items-center justify-content-lg-between" style=""> --}}
 
     <h1>
-        <a class="logo me-auto me-lg-0" style="color: #fff;" href="{{ url('/') }}">
-            <img style="width: 40; height: 40px; margin-right: 5px;" src="../assets/img/logo.png" alt="">
-            {{ 'Cinema Rukiya' }}
+        <a class="logo me-auto me-lg-0 d-flex align-items-center" style="color: #fff; text-decoration: none;" href="{{ url('/') }}">
+            <img style="width: 38px; height: 38px; margin-right: 10px;" src="{{ asset('assets/img/logo_icon.svg') }}" alt="Alem Cinema">
+            <span style="font-weight: 800; letter-spacing: 1px; color: #fff;"><span style="color: #f59e0b;">ALEM</span> CINEMA</span>
         </a>
     </h1>
     <!-- Uncomment below if you prefer to use an image logo -->
@@ -26,60 +26,38 @@
 
     <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
-        <li ><a class="nav-link scrollto" id="home" href="/">Home</a></li>
+        <li><a class="nav-link scrollto {{ Request::is('/') ? 'active' : '' }}" id="home" href="/">Home</a></li>
 
         @auth
             @if (Auth::user()->role == 'Admin')
-                <li><a class="nav-link scrollto" id="user" href="/user">Users</a></li>
-                <li><a class="nav-link scrollto" id="movie" href="/movie">Movies</a></li>
-                <li><a class="nav-link scrollto" id="coupon" href="/coupon">Coupons</a></li>
-                <li><a class="nav-link scrollto" id="ticket" href="/ticket">Tickets</a></li>
-                <li><a class="nav-link scrollto" id="report" href="/report_request">Report</a></li>
-                <li><a class="nav-link scrollto" id="feedback" href="/feedback">Feedbacks <span class="rounded-circle bg-danger" style="min-width: 25px; text-align: center;"  id="Nfeedback" style="color: #fff;"></span></a></li>
-                {{-- <script>
-                    var xhttp0;
-                    xhttp0 = new XMLHttpRequest();
-                    xhttp0.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            countFeedback = JSON.parse(this.responseText);
-                            if (countFeedback.count > 9) {
-                                document.getElementById('Nfeedback').style.visibility = 'visible';
-                                document.getElementById('feedback').style.color = '#ffc451';
-                                document.getElementById('Nfeedback').innerHTML = '9+';
-                            } else if (countFeedback.count > 0) {
-                                document.getElementById('Nfeedback').style.visibility = 'visible';
-                                document.getElementById('feedback').style.color = '#ffc451';
-                                document.getElementById('Nfeedback').innerHTML = countFeedback.count;
-                            } else {
-                                document.getElementById('feedback').style.color = '#ffdca9';
-                                document.getElementById('Nfeedback').style.visibility = 'hidden';
-                            }
-                        }
-
-                    };
-                    var location_unF = "/countFeedback";
-                    xhttp0.open("GET", location_unF, true);
-                    xhttp0.send();
-                </script> --}}
+                <li><a class="nav-link scrollto {{ Request::is('user*') || Request::is('searchUser*') ? 'active' : '' }}" id="user" href="/user">Users</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('movie*') || Request::is('detailM*') || Request::is('seats*') || Request::is('thisWeek*') || Request::is('addM*') || Request::is('editM*') ? 'active' : '' }}" id="movie" href="/movie">Movies</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('catagor*') ? 'active' : '' }}" id="catagory" href="/catagories">Categories</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('show*') ? 'active' : '' }}" id="show" href="/show">Shows</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('ticket*') || Request::is('searchTicket*') ? 'active' : '' }}" id="ticket" href="/ticket">Tickets</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('coupon*') ? 'active' : '' }}" id="coupon" href="/coupon">Coupons</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('today*') ? 'active' : '' }}" id="today" href="/today">Today</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('report*') ? 'active' : '' }}" id="report" href="/report_request">Report</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('feedback*') ? 'active' : '' }}" id="feedback" href="/feedback">Feedbacks</a></li>
             @endif
 
             @if (Auth::user()->role == 'Multimedia Specialist')
-                <li><a class="nav-link scrollto" id="movie" href="/movie">Movies</a></li>
-                <li><a class="nav-link scrollto" id="catagory" href="/catagories">Catagories</a></li>
-                <li><a class="nav-link scrollto" id="show" href="/show">Shows</a></li>
-                <li><a class="nav-link scrollto" id="ticket" href="/ticket">Tickets</a></li>
-                @endif
+                <li><a class="nav-link scrollto {{ Request::is('movie*') || Request::is('detailM*') || Request::is('seats*') || Request::is('thisWeek*') || Request::is('addM*') || Request::is('editM*') ? 'active' : '' }}" id="movie" href="/movie">Movies</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('catagor*') ? 'active' : '' }}" id="catagory" href="/catagories">Categories</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('show*') ? 'active' : '' }}" id="show" href="/show">Shows</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('ticket*') || Request::is('searchTicket*') ? 'active' : '' }}" id="ticket" href="/ticket">Tickets</a></li>
+            @endif
 
             @if (Auth::user()->role == 'User')
-                <li><a class="nav-link scrollto" id="movie" href="/movie">Movies</a></li>
-                <li><a class="nav-link scrollto" id="ticket" href="/userTicket">Tickets</a></li>
-                <li><a class="nav-link scrollto" id="account" href="/myaccount">My Account</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('movie*') || Request::is('detailM*') || Request::is('seats*') || Request::is('thisWeek*') ? 'active' : '' }}" id="movie" href="/movie">Movies</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('userTicket*') ? 'active' : '' }}" id="ticket" href="/userTicket">Tickets</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('myaccount*') || Request::is('userProfile*') ? 'active' : '' }}" id="account" href="/myaccount">My Account</a></li>
             @endif
 
             @if (Auth::user()->role == 'Ticket Controller')
-                <li><a class="nav-link scrollto" id="movie" href="/movie">Movies</a></li>
-                <li><a class="nav-link scrollto" id="ticket" href="/ticket">Tickets</a></li>
-                <li><a class="nav-link scrollto" id="today" href="/today">Today</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('movie*') || Request::is('detailM*') || Request::is('seats*') || Request::is('thisWeek*') ? 'active' : '' }}" id="movie" href="/movie">Movies</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('ticket*') || Request::is('searchTicket*') ? 'active' : '' }}" id="ticket" href="/ticket">Tickets</a></li>
+                <li><a class="nav-link scrollto {{ Request::is('today*') ? 'active' : '' }}" id="today" href="/today">Today</a></li>
             @endif
 
         @else
@@ -94,7 +72,14 @@
 
 
     {{-- <a href="#about" class="get-started-btn scrollto">Get Started</a> --}}
-    <ul class="d-flex justify-content-between">
+    <ul class="d-flex align-items-center mb-0 ps-0" style="gap: 10px;">
+        <!-- Theme Toggle -->
+        <li style="list-style: none;">
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle theme">
+                <i id="themeToggleIcon" class="bi bi-sun-fill"></i>
+            </button>
+        </li>
+
         @guest
             @if (Route::has('register'))
                 <li style="list-style: none;">
@@ -115,12 +100,12 @@
             @endif
 
             <a class="nav-link nav-profile d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                <img src="../../image/userProfile/{{Auth::user()->profile}}" width="35" height="35" alt="" class="rounded-circle">
+                <img src="{{ asset('image/userProfile/'.Auth::user()->profile) }}" width="35" height="35" alt="" class="rounded-circle" style="border: 2px solid #f59e0b; object-fit: cover;">
                 <span class="d-none d-md-block dropdown-toggle p-2" style="font-weight: 600;  color: #fff">{{Auth::user()->username}}</span>
             </a><!-- End Profile Iamge Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu arrow profile" style="position: absolute; left: -50px">
-                <li class="pl-2" style=" text-align: center; height: 36px;  color: #; padding-left: 8px;">
+                <li class="pl-2" style=" text-align: center; height: 36px; padding-left: 8px;">
                 {{-- <span style="height: 20px; font-weight: 600;  font-size: 16px;">{{Auth::user()->username}}</span><br> --}}
 
                 <span style="font-size: 14px; font-weight: 600;">{{Auth::user()->role}}</span>
@@ -207,5 +192,60 @@
     </div>
 </div>
 {{-- /SEND COUPON--}}
+
+<script>
+    function updateThemeToggleIcon() {
+        var currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        var icon = document.getElementById('themeToggleIcon');
+        if (icon) {
+            if (currentTheme === 'light') {
+                icon.className = 'bi bi-moon-stars-fill';
+                icon.parentElement.title = 'Switch to Dark Mode';
+            } else {
+                icon.className = 'bi bi-sun-fill';
+                icon.parentElement.title = 'Switch to Light Mode';
+            }
+        }
+    }
+
+    function toggleTheme() {
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('alem_theme', next);
+        updateThemeToggleIcon();
+    }
+
+    // Initialize icon on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateThemeToggleIcon);
+    } else {
+        updateThemeToggleIcon();
+    }
+
+    // Ensure active nav link is always marked
+    document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname;
+        var navLinks = document.querySelectorAll('#navbar .nav-link');
+        var hasActive = false;
+        navLinks.forEach(function(link) {
+            if (link.classList.contains('active')) {
+                hasActive = true;
+            }
+        });
+        if (!hasActive) {
+            navLinks.forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (href && href !== '#' && href !== '/') {
+                    if (path.startsWith(href)) {
+                        link.classList.add('active');
+                    }
+                } else if (href === '/' && (path === '/' || path === '')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+</script>
 
 

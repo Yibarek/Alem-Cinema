@@ -1,14 +1,7 @@
 @extends('layouts.app')
 
-<title>Alem Cinema</title>
-<script>
-    var header = document.getElementById('header');
-    header.style.background = rgba(0, 0, 0, 0);
-</script>
+<title>Alem Cinema | Premium Movie Experience</title>
 @section('content')
-<script>
-    document.getElementById('header').style.background = rgba(0, 0, 0, 0.1);
-</script>
 
   <div style="width: 100%; margin-top: -2%;">
     <div class="msg" style="position: fixed">
@@ -29,34 +22,112 @@
         @endif
     </div>
     <!-- ======= Hero Section ======= -->
-  <section id="hero" class="d-flex align-items-center">
+  <section id="hero" class="d-flex align-items-center py-5">
     @php
-        $id = '1';
+        $featuredMovies = $movies->take(6);
     @endphp
     <div class="container">
-      <div class="row">
-        <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
-            <h1 class="heroh1" style="color: #1a69aa; font-size: 70px;">Welcome to Alem Cinema</h1>
-            <h3 style="color: #1a69aa;">Buy tickets online. Have special time with our movies.</h3>
-          <div data-aos="fade-up" data-aos-delay="7">
-            <a href="#portfolio" class="btn-get-started scrollto">Movies <i class="bx bx-chevrons-down"></i></a>
+      <div class="row align-items-center">
+        <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
+            <div class="d-inline-flex align-items-center gap-2 mb-3">
+                <span class="badge px-3 py-2" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); font-size: 12px; letter-spacing: 1px; border-radius: 50px;">
+                    <i class="bi bi-stars me-1"></i> THE CINEMA OF PRESTIGE
+                </span>
+            </div>
+            <h1 class="heroh1" style="color: #fff; font-size: 54px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px;">Welcome to <span style="color: #f59e0b; text-shadow: 0 0 25px rgba(245,158,11,0.4);">Alem Cinema</span></h1>
+            <h3 style="color: #94a3b8; font-size: 18px; margin-top: 15px; margin-bottom: 25px; line-height: 1.6;">Discover current releases, book your favourite cinema seats instantly, and immerse yourself in an extraordinary theatrical journey.</h3>
+          
+          <div class="d-flex flex-wrap align-items-center gap-3 mb-4" data-aos="fade-up" data-aos-delay="7">
+            <a href="#portfolio" class="btn-get-started scrollto">
+                <i class="bi bi-film"></i> Browse Movies
+            </a>
+            <a href="/today" class="btn btn-outline-warning px-4 py-2" style="border-radius: 50px; font-weight: 700; border-width: 2px;">
+                <i class="bi bi-calendar-check me-1"></i> Today's Schedule
+            </a>
+          </div>
+
+          <div class="hero-feature-bar d-flex align-items-center gap-4 pt-3 mt-2 border-top">
+            <div><strong>256</strong> Luxury Seats</div>
+            <div class="feature-dot"></div>
+            <div><strong>4K</strong> Laser Projection</div>
+            <div class="feature-dot"></div>
+            <div><strong>Dolby</strong> Atmos Sound</div>
           </div>
         </div>
-        <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="fade-left" data-aos-delay="200" style="margin-top: 35px; ">
-            <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="float: right; max-width: 440px; max-height: 600px;">
-                <div class="carousel-inner">
-                    @foreach ($movies as $m)
-                        <div class="carousel-item @if ($id=='1') active <?php $id='0' ?> @endif" style="text-align: center; width: 100%;">
-                            <img src="../image/posters/{{$m->poster}}" class="d-block w-100" alt="...">
 
-                        </div>
-                    @endforeach
+        <div class="col-lg-6 order-1 order-lg-2 hero-img mt-4 mt-lg-0" data-aos="fade-left" data-aos-delay="200">
+            <div class="hero-slider-wrapper">
+                <div id="heroMovieCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover" data-bs-touch="true">
+                    
+                    @if ($featuredMovies->count() > 1)
+                    <!-- Indicators -->
+                    <div class="carousel-indicators hero-indicators">
+                        @foreach ($featuredMovies as $index => $m)
+                            <button type="button" data-bs-target="#heroMovieCarousel" data-bs-slide-to="{{$index}}" class="@if($loop->first) active @endif" aria-label="Slide {{$index + 1}}"></button>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <!-- Carousel Slides -->
+                    <div class="carousel-inner">
+                        @forelse ($featuredMovies as $m)
+                            <div class="carousel-item @if ($loop->first) active @endif">
+                                <img src="../image/posters/{{$m->poster}}" class="hero-carousel-img" alt="{{$m->title}}">
+                                <div class="hero-slide-overlay"></div>
+
+                                <!-- Floating top badges -->
+                                <div class="hero-top-badges">
+                                    <span class="hero-slide-badge">
+                                        <span class="beacon-dot"></span> NOW SHOWING
+                                    </span>
+                                    <span class="hero-cat-badge">
+                                        {{$m->catagory}}
+                                    </span>
+                                </div>
+
+                                <!-- Bottom Caption & Action -->
+                                <div class="hero-slide-caption">
+                                    <h3 class="hero-slide-title text-truncate" title="{{$m->title}}">{{$m->title}}</h3>
+                                    <div class="hero-slide-meta">
+                                        <span><i class="bi bi-clock text-warning me-1"></i>{{$m->length}} min</span>
+                                        <span><i class="bi bi-calendar3 text-warning me-1"></i>{{$m->released_year}}</span>
+                                        <span class="text-warning fw-bold"><i class="bi bi-ticket-perforated me-1"></i>{{$m->normal}} ETB</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a href="/seats/{{$m->id}}" class="get-btn btn-sm flex-grow-1 text-center py-2" style="font-size: 13px; border-radius: 50px;">
+                                            <i class="bi bi-ticket-perforated-fill me-1"></i> Reserve Seats
+                                        </a>
+                                        <a href="/detailM/{{$m->id}}" class="btn btn-outline-light btn-sm px-3 py-2" style="border-radius: 50px; font-weight: 600; font-size: 13px;" title="View Movie Details">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="carousel-item active d-flex align-items-center justify-content-center" style="background: #111827;">
+                                <div class="text-center p-4">
+                                    <i class="bi bi-film display-3 text-warning"></i>
+                                    <h4 class="text-white mt-3">Alem Cinema</h4>
+                                    <p class="text-white-50">Welcome to premier cinema entertainment.</p>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    @if ($featuredMovies->count() > 1)
+                    <!-- Prev / Next Controls -->
+                    <button class="carousel-control-prev hero-carousel-btn" type="button" data-bs-target="#heroMovieCarousel" data-bs-slide="prev" aria-label="Previous Slide">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="carousel-control-next hero-carousel-btn" type="button" data-bs-target="#heroMovieCarousel" data-bs-slide="next" aria-label="Next Slide">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    @endif
                 </div>
             </div>
         </div>
       </div>
     </div>
-
   </section><!-- End Hero -->
 
   <section id="main" style="width: 100%; margin: auto; margin-top: 10px;">
@@ -75,29 +146,47 @@
                 @php
                     $most_liked++;
                 @endphp
-                <div class="col-lg-3 col-md-8 portfolio-item">
-                    <div class="portfolio-wrap" style="max-height: 370px; min-height: 370px;">
-                    <label class="movie_title">{{$most_like->title}}</label>
-                    <img src="../image/posters/{{$most_like->poster}}" class="img-fluid" alt="" style="max-height: 370px; min-height: 370px;">
-                    <div class="portfolio-links">
-                        <a href="../image/posters/{{$most_like->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$most_like->title}}"><i class="bx bx-zoom-in"></i></a>
-                        {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#viewTrailer{{$most_like->id}}" title="Play Trailer"><i class="bx bx-play"></i></a> --}}
-                        <a href="/detailM/{{$most_like->id}}" title="More Details"><i class="bx bx-movie-play"></i></a>
-                    </div>
-                    </div>
-                    <div class="">
-                    <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$most_like->title}}"><i class="bx bx-show" style="color: #3287cc"></i> view  <strong>{{$most_like->views}}</strong></label>
-                    <a href="/like/{{$most_like->id}}/welcome" style="color: #3287cc" title="Likes">
+                <div class="col-lg-3 col-md-6 portfolio-item">
+                    <div class="portfolio-wrap" style="max-height: 370px; min-height: 370px; position: relative;">
                         @auth
-                            @if (App\Http\Controllers\movieController::userLike($most_like->id) )
-                                <i class=" bx bxs-like"></i>
-                            @else
-                                <i class=" bx bx-like"></i>
+                            @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
+                            <div class="movie-admin-actions">
+                                <a href="/editM/{{$most_like->id}}" class="action-badge-btn edit" title="Edit Movie">
+                                    <i class="bi bi-pencil-square" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
+                                <a href="/deleteMovie/{{$most_like->id}}" class="action-badge-btn delete" title="Delete Movie" onclick="return confirm('Are you sure you want to delete this movie?');">
+                                    <i class="bi bi-trash-fill" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
+                            </div>
                             @endif
-                        @else
-                            <i class=" bx bx-like"></i>
                         @endauth
-                    </a>  <strong>{{$most_like->likes}}</strong></label>
+                        <label class="movie_title">{{$most_like->title}}</label>
+                        <img src="../image/posters/{{$most_like->poster}}" class="img-fluid" alt="" style="max-height: 370px; min-height: 370px; width: 100%; object-fit: cover;">
+                        <div class="portfolio-links">
+                            <a href="../image/posters/{{$most_like->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$most_like->title}}"><i class="bi bi-zoom-in"></i></a>
+                            <a href="/detailM/{{$most_like->id}}" title="More Details"><i class="bi bi-info-circle"></i></a>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap pt-2 px-1">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="p-1 mb-0" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$most_like->title}}"><i class="bi bi-eye" style="color: #f59e0b"></i> <strong>{{$most_like->views}}</strong></label>
+                            <label class="p-1 mb-0" title="Likes">
+                                <a href="/like/{{$most_like->id}}/welcome" style="color: #f59e0b" title="Likes">
+                                    @auth
+                                        @if (App\Http\Controllers\movieController::userLike($most_like->id))
+                                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                                        @else
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        @endif
+                                    @else
+                                        <i class="bi bi-hand-thumbs-up"></i>
+                                    @endauth
+                                </a> <strong>{{$most_like->likes}}</strong>
+                            </label>
+                        </div>
+                        <div>
+                            <a href="/seats/{{$most_like->id}}" class="get-btn btn-sm" style="border-radius: 50px; padding: 4px 14px; font-size: 13px; text-decoration: none; font-weight: 600;">Buy Ticket</a>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -144,48 +233,57 @@
                     }
                 @endphp
 
-                <div class="col-lg-3 col-md-9 portfolio-item {{$filter}}">
-                    <div class="portfolio-wrap" style="max-height: 370px; min-height: 370px;">
-                    <label class="movie_title">{{$movie->title}}</label>
-                    <img src="../image/posters/{{$movie->poster}}" class="img-fluid" alt="" style="max-height: 370px; min-height: 370px;">
-                    <div class="portfolio-links">
-                        <a href="../image/posters/{{$movie->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bx bx-zoom-in"></i></a>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewTrailer{{$movie->id}}" title="Play Trailer"><i class="bx bx-play"></i></a>
-                        <a href="/detailM/{{$movie->id}}" title="More Details"><i class="bx bx-movie-play"></i></a>
-                    </div>
-                    </div>
-                    <div class="">
-                    <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Views"><i class="bx bx-show" style="color: #3287cc"></i>   <strong title="Views">{{$movie->views}}</strong></label>
-                    <a href="/like/{{$movie->id}}/welcome" style="color: #3287cc" title="Likes">
+                <div class="col-lg-3 col-md-6 portfolio-item {{$filter}}">
+                    <div class="portfolio-wrap" style="max-height: 370px; min-height: 370px; position: relative;">
                         @auth
-                            @if (App\Http\Controllers\movieController::userLike($movie->id))
-                                <i class=" bx bxs-like"></i>
-                            @else
-                                <i class=" bx bx-like"></i>
+                            @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
+                            <div class="movie-admin-actions">
+                                <a href="/editM/{{$movie->id}}" class="action-badge-btn edit" title="Edit Movie">
+                                    <i class="bi bi-pencil-square" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
+                                <a href="/deleteMovie/{{$movie->id}}" class="action-badge-btn delete" title="Delete Movie" onclick="return confirm('Are you sure you want to delete this movie?');">
+                                    <i class="bi bi-trash-fill" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
+                            </div>
                             @endif
-                        @else
-                            <i class=" bx bx-like"></i>
                         @endauth
-                    </a>  <strong>{{$movie->likes}}</strong></label>
-                    @auth
-                        @if (App\Http\Controllers\ticketController::tickets($movie->id))
-                            <label class="p-2" title=""><i class="bi bi-ticket-fill" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill" style="color: #3287cc"></a>
-                            @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                                <a href="/cancelTicket/{{$movie->id}}/movie" title="Cancel Ticket" class="bi bi-x-circle-fill" style="color: #ec7168"></a>
-                            @endif
-                        @else
-                            <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                            @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                                <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
-                            @endif
-                        @endif
-                    @else
-                        <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                        @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                            <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
-                        @endif
-                    @endauth
+                        <label class="movie_title">{{$movie->title}}</label>
+                        <img src="../image/posters/{{$movie->poster}}" class="img-fluid" alt="" style="max-height: 370px; min-height: 370px; width: 100%; object-fit: cover;">
+                        <div class="portfolio-links">
+                            <a href="../image/posters/{{$movie->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bi bi-zoom-in"></i></a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewTrailer{{$movie->id}}" title="Play Trailer"><i class="bi bi-play-fill"></i></a>
+                            <a href="/detailM/{{$movie->id}}" title="More Details"><i class="bi bi-info-circle"></i></a>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap pt-2 px-1">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="p-1 mb-0" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Views"><i class="bi bi-eye" style="color: #f59e0b"></i> <strong title="Views">{{$movie->views}}</strong></label>
+                            <label class="p-1 mb-0" title="Likes">
+                                <a href="/like/{{$movie->id}}/welcome" style="color: #f59e0b" title="Likes">
+                                    @auth
+                                        @if (App\Http\Controllers\movieController::userLike($movie->id))
+                                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                                        @else
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        @endif
+                                    @else
+                                        <i class="bi bi-hand-thumbs-up"></i>
+                                    @endauth
+                                </a> <strong>{{$movie->likes}}</strong>
+                            </label>
+                            @auth
+                                @if (App\Http\Controllers\ticketController::tickets($movie->id))
+                                    <label class="p-1 mb-0" title="Purchased Ticket">
+                                        <i class="bi bi-ticket-perforated-fill" style="color: #f59e0b"></i> <strong>{{$movie->tickets}}</strong>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill text-success" title="View Ticket Details"></a>
+                                        <a href="/cancelTicket/{{$movie->id}}/movie" title="Cancel Ticket" class="bi bi-x-circle-fill text-danger ms-1"></a>
+                                    </label>
+                                @endif
+                            @endauth
+                        </div>
+                        <div>
+                            <a href="/seats/{{$movie->id}}" class="get-btn btn-sm" style="border-radius: 50px; padding: 4px 14px; font-size: 13px; text-decoration: none; font-weight: 600;">Buy Ticket</a>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -330,30 +428,30 @@ class="modal fade" id="buyTicket{{$movie->id}}" data-bs-backdrop="static" data-b
 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="min-width: 50%;">
     <div class="modal-content" style="overflow: auto; height: 300px;  margin-left: 100px">
-        <div class="modal-header get-btn d-flex" style="height: 40px; color: #fff; background-color: #3287cc;">
+        <div class="modal-header d-flex" style="height: 44px; color: #0b0f17; background: linear-gradient(135deg, #f59e0b, #d97706);">
             <?php $team_logo = ''; ?>
 
-            <div class="modal-title page_title" id="staticBackdropLabel">
-                {{$movie->title}} ///--->>> <strong>Buy Ticket</strong>
+            <div class="modal-title page_title" id="staticBackdropLabel" style="color: #0b0f17 !important; font-weight: 700;">
+                {{$movie->title}} &mdash; <strong>Buy Ticket</strong>
             </div>
             <span style=""> </span>
 
-            <button type="button" title="close" style="color: #3287cc;" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"><a href="#" style="color: #fff; margin-left: -30px;"></a></button>
+            <button type="button" title="close" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
 
         </div>
         <?php $i=1; ?>
         <div class="modal-body" style=" height: fit-content;">
             <form action="/buyTicket/{{$movie->id}}" method="POST">
                 @csrf
-                <table>
+                <table style="width: 100%;">
                     <tr>
                         <div>
                             <td class="p-2">
-                                <label >Ticket Type</label>
+                                <label>Ticket Type</label>
                         </td>
                             <td class="p-2" >
-                                <input onclick="selectType()" required class="form-check-input"  type="radio"  name ="radio" id ="vip" > VIP: <strong>{{$movie->vip}}.00 ETB</strong></input>
-                                <input onclick="selectType()" required class="form-check-input" style="margin-left: 60px;" type="radio"  name ="radio" id ="normal" > Normal: <strong>{{$movie->normal}}.00 ETB</strong></input>
+                                <input onclick="selectType()" required class="form-check-input" type="radio" name="radio" id="vip"> VIP: <strong>{{$movie->vip}}.00 ETB</strong></input>
+                                <input onclick="selectType()" required class="form-check-input" style="margin-left: 20px;" type="radio" name="radio" id="normal"> Normal: <strong>{{$movie->normal}}.00 ETB</strong></input>
                             </td>
                         </div>
                     </tr>
@@ -361,20 +459,20 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <tr>
                         <div>
                             <td class="p-2">
-                                <label >Seat</label>
+                                <label>Seat Number</label>
                         </td>
                             <td class="p-2" >
-                                <input required class="form-control"  type="number" name ="chairNo" id ="chairNo" >
+                                <input required class="form-control" type="number" name="chairNo" id="chairNo" placeholder="e.g. 15">
                             </td>
                         </div>
                     </tr>
 
                     <tr>
                         <td></td>
-                        <td><input  type="text" style="display: none; color: #444; border: none; cursor: none;" id="radio_value" name="radio_value" value=""></td>
+                        <td><input type="text" style="display: none;" id="radio_value" name="radio_value" value=""></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: center;"><input type="submit" style="border: rgb(27, 134, 167);" value="Order Ticket" class="get-btn"></td>
+                        <td colspan="2" style="text-align: center; padding-top: 15px;"><input type="submit" value="Confirm Order" class="get-btn"></td>
                     </tr>
                 </table>
             </form>
@@ -428,7 +526,7 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <?php  echo "<table class='pl-5' style='width: 300px; margin: auto;'>
                             <tbody style='width: 300px;'>
                                 <tr style='width: 300px;'>
-                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Cinima Rukiya</h5>
+                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Alem Cinema</h5>
                                 </tr>
                                 <tr style='width: 50%; margin: auto;'>
                                     <div>
@@ -525,7 +623,7 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <table class="pl-5" style="width: 95%; margin: auto;">
                     <tbody>
                         <tr>
-                            <h5 style="text-align: center; font-weight: 600;">Cinima Rukiya</h5>
+                            <h5 style="text-align: center; font-weight: 600;">Alem Cinema</h5>
                         </tr>
                         <tr style="width: 100%; margin: auto;">
                             <div>
@@ -633,8 +731,20 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         else if (rd2.checked == true) {
             document.getElementById('radio_value').value = 'normal';
         }
-
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var heroCarouselElem = document.getElementById('heroMovieCarousel');
+        if (heroCarouselElem && typeof bootstrap !== 'undefined') {
+            var heroCarousel = bootstrap.Carousel.getOrCreateInstance(heroCarouselElem, {
+                interval: 3000,
+                ride: 'carousel',
+                pause: 'hover',
+                wrap: true
+            });
+            heroCarousel.cycle();
+        }
+    });
 </script>
 
 @endsection

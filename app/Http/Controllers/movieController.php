@@ -124,7 +124,7 @@ class movieController extends Controller
     }
 
     public function add(Request $request){
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $trailer="";
             $return_code=0;
@@ -199,7 +199,7 @@ class movieController extends Controller
     }
 
     public function edit(Request $request, $id){
-        if(Auth::user()->role == 'Multimedia Specialist'){
+        if(Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin'){
             $return_code=0;
             $trailer="";
             $return_code=0;
@@ -314,51 +314,52 @@ class movieController extends Controller
             foreach ($movies as $movie){
                     $movie_list++;
 
-                $output .='<div class="col-lg-2 col-md-4 portfolio-item filter-app" >
-                <div class="portfolio-wrap" style="max-height: 260px; min-height: 260px;">
+                $adminActions = '';
+                if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin"){
+                    $adminActions = '<div class="movie-admin-actions">
+                        <a href="/editM/'.$movie->id.'" class="action-badge-btn edit" title="Edit Movie">
+                            <i class="bi bi-pencil-square" style="color: #ffffff !important; font-size: 15px;"></i>
+                        </a>
+                        <a href="/deleteMovie/'.$movie->id.'" class="action-badge-btn delete" title="Delete Movie" onclick="return confirm(\'Are you sure you want to delete this movie?\');">
+                            <i class="bi bi-trash3-fill" style="color: #ffffff !important; font-size: 15px;"></i>
+                        </a>
+                    </div>';
+                }
+
+                $likeIcon = movieController::userLike($movie->id) ? '<i class="bi bi-hand-thumbs-up-fill"></i>' : '<i class="bi bi-hand-thumbs-up"></i>';
+                
+                $ticketBadge = '';
+                if (ticketController::tickets($movie->id)){
+                    $ticketBadge = '<label class="p-1 mb-0" title="Purchased Ticket">
+                        <i class="bi bi-ticket-perforated-fill" style="color: #f59e0b"></i> <strong>'.$movie->tickets.'</strong>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#ticket'.ticketController::ticketid($movie->id).'" class="bi bi-check-circle-fill text-success" title="View Ticket"></a>
+                        <a href="/cancelTicket/'.$movie->id.'/movie" title="Cancel Ticket" class="bi bi-x-circle-fill text-danger ms-1"></a>
+                    </label>';
+                }
+
+                $output .='<div class="col-lg-2 col-md-4 portfolio-item filter-app">
+                    <div class="portfolio-wrap" style="max-height: 260px; min-height: 260px; position: relative;">
+                        '.$adminActions.'
                         <label class="movie_title">'.$movie->title.'</label>
-                        <img src="../image/posters/'.$movie->poster.'" class="img-fluid" alt="">
-                        <div class="portfolio-links">';
-                            if (Auth::user()->role == "Multimedia Specialist"){
-                                $output .='<div class="d-flex" style="position: absolute; top: -25px; right: 5px;">
-                                <a href="/editM/'.$movie->id.'"><i class="ri ri-edit-2-fill p-1" style="font-size: 17px; background-color: #206bcc; color: #fff;" title="Edit Movie"></i></a>
-                                <a href="/deleteMovie/'.$movie->id.'"><i class="ri ri-delete-bin-6-line p-1 " style="font-size: 17px; background-color: #cc2620; margin-left: 6px; color: #fff;" title="Delete Movie"></i></a>
-                            </div>';
-                            }
-                            $output .='<a  href="../image/posters/'.$movie->poster.'" data-gallery="portfolioGallery" class="portfolio-lightbox" title="'.$movie->title.'"><i class="bx bx-zoom-in"></i></a>
-                            <a href="#" id="'.$movie->id.'" onclick="view'.$movie->id.'()" data-bs-toggle="modal" data-bs-target="#viewTrailer'.$movie->id.'" title="Play Trailer"><i class="bx bx-play"></i></a>
-
-                            <input type="text" id="reserver" name="reserver" style="display: none;">
-
-                            <a href="/detailM/'.$movie->id.'" title="More Details"><i class="bx bx-movie-play"></i></a>
+                        <img src="../image/posters/'.$movie->poster.'" class="img-fluid" alt="" style="max-height: 260px; min-height: 260px; width: 100%; object-fit: cover;">
+                        <div class="portfolio-links">
+                            <a href="../image/posters/'.$movie->poster.'" data-gallery="portfolioGallery" class="portfolio-lightbox" title="'.$movie->title.'"><i class="bi bi-zoom-in"></i></a>
+                            <a href="#" id="'.$movie->id.'" onclick="view'.$movie->id.'()" data-bs-toggle="modal" data-bs-target="#viewTrailer'.$movie->id.'" title="Play Trailer"><i class="bi bi-play-fill"></i></a>
+                            <a href="/detailM/'.$movie->id.'" title="More Details"><i class="bi bi-info-circle"></i></a>
                         </div>
                     </div>
-                    <div class="">
-                    <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Views"><i class="bx bx-show" style="color: #3287cc"></i>   <strong id="v'.$movie->id.'">'.$movie->views.'</strong></label>
-                    <label class="p-2" title="">
-                        <a href="/like/'.$movie->id.'/movie" style="color: #3287cc" title="Likes">';
-                            if (movieController::userLike('.$movie->id.')){
-                                $output .='<i class=" bx bxs-like"></i>';
-                            }
-                            else{
-                                $output .='<i class=" bx bx-like"></i>';
-                            }
-                            $output .='</a>  <strong>'.$movie->likes.'</strong></label>';
-                        if (ticketController::tickets('.$movie->id.')){
-                            $output .='<label class="p-2" title=""><i class="bi bi-ticket-fill" style="color: #3287cc"></i>   <strong>'.$movie->tickets.'</strong>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#ticket'.$movie->title.'" class="bi bi-check-circle-fill" style="color: #3287cc"></a>';
-                            if (ticketController::ticketTime('.$movie->title.')){
-                                $output .='<a href="/cancelTicket/'.$movie->id.'/movie" title="Cancel Ticket" class="bi bi-x-circle-fill" style="color: #ec7168"></a>';
-                            }
-                        }
-                        else{
-                            $output .='<label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>'.$movie->tickets.'</strong>';
-                            if (ticketController::ticketTime('.$movie->title.')){
-                                $output .='<a href="#" data-bs-toggle="modal" data-bs-target="#buyTicket'.$movie->id.'" class="get-btn p-1" type="submit">Buy Ticket</a>';
-                            }
-                            $output .='</label>';
-                        }
-                        $output .='</div>
+                    <div class="d-flex align-items-center justify-content-between flex-wrap pt-2 px-1">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="p-1 mb-0" title="Views"><i class="bi bi-eye" style="color: #f59e0b"></i> <strong id="v'.$movie->id.'">'.$movie->views.'</strong></label>
+                            <label class="p-1 mb-0" title="Likes">
+                                <a href="/like/'.$movie->id.'/movie" style="color: #f59e0b" title="Likes">'.$likeIcon.'</a> <strong>'.$movie->likes.'</strong>
+                            </label>
+                            '.$ticketBadge.'
+                        </div>
+                        <div>
+                            <a href="/seats/'.$movie->id.'" class="get-btn btn-sm" style="border-radius: 50px; padding: 4px 12px; font-size: 12.5px; text-decoration: none; font-weight: 600;">Buy Ticket</a>
+                        </div>
+                    </div>
                 </div>';
             }
             if ($movie_list == 0){
@@ -384,7 +385,7 @@ class movieController extends Controller
 
     function delete($id){
 
-        if (Auth::user()->role == 'Multimedia Specialist') {
+        if (Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin') {
             $return_code=0;
             $return_code = DB::table('movies')->where('id', $id)->delete();
             if ($return_code == 1) {

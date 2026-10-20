@@ -27,17 +27,14 @@
     <section class="breadcrumbs">
       <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-            <h2 class="d-flex">Movies
-                @if (Auth::user()->role == 'Multimedia Specialist')
-                    <a title="Add New Movie" class="ml-2 d-flex" href="/addM">
-                        <i class="" style="color: #fff">A</i>
-                        <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                        </div>
-                    </a>
-
-                    {{-- <a class="p-1" style="margin-left: 10px; background-color: #3287cc; font-size: 16px; color: #fff; border-radius: 15px;" href="">Show shedules</a> --}}
-                @endif
+            <h2 class="d-flex align-items-center">Movies
+                @auth
+                    @if (Auth::user()->role == 'Multimedia Specialist' || Auth::user()->role == 'Admin')
+                        <a title="Add New Movie" class="get-btn btn-sm d-inline-flex align-items-center gap-2 ms-3" style="border-radius: 50px; padding: 6px 16px; font-size: 13.5px; font-weight: 700; text-decoration: none;" href="/addM">
+                            <i class="bi bi-plus-lg" style="font-size: 14px; font-weight: 800;"></i> Add New Movie
+                        </a>
+                    @endif
+                @endauth
                 <div class="d-flex">
                     <label style="margin-left: 100px; margin-top: 5px; font-size: 17px;">Catagory: </label>
                     <select onchange="catagory()" class="selectVal" id="selectVal" name="user" class="form-check-inline" style="margin-left: 10px; color: #333;  font-size: 17px; width: 150px; height: 30px; border: 1px solid #e1e1e1;">
@@ -108,49 +105,59 @@
                 @php
                     $movie_list++;
                 @endphp
-                <div class="col-lg-2 col-md-4 portfolio-item filter-app" >
-                    <div class="portfolio-wrap" style="max-height: 260px; min-height: 260px;">
-
-                        <label class="movie_title">{{$movie->title}}</label>
-                        <img src="../image/posters/{{$movie->poster}}" class="img-fluid" alt="" style="max-height: 260px; min-height: 260px;">
-                        <div class="portfolio-links">
-                            @if (Auth::user()->role == "Multimedia Specialist")
-                            <div class="d-flex" style="position: absolute; top: -25px; right: 5px;">
-                                <a href="/editM/{{$movie->id}}"><i class="ri ri-edit-2-fill p-1" style="font-size: 17px; background-color: #206bcc; color: #fff;" title="Edit Movie"></i></a>
-                                <a href="/deleteMovie/{{$movie->id}}"><i class="ri ri-delete-bin-6-line p-1 " style="font-size: 17px; background-color: #cc2620; margin-left: 6px; color: #fff;" title="Delete Movie"></i></a>
+                <div class="col-lg-2 col-md-4 portfolio-item filter-app">
+                    <div class="portfolio-wrap" style="max-height: 260px; min-height: 260px; position: relative;">
+                        @auth
+                            @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
+                            <div class="movie-admin-actions">
+                                <a href="/editM/{{$movie->id}}" class="action-badge-btn edit" title="Edit Movie">
+                                    <i class="bi bi-pencil-square" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
+                                <a href="/deleteMovie/{{$movie->id}}" class="action-badge-btn delete" onclick="return confirm('Are you sure you want to delete this movie?');" title="Delete Movie">
+                                    <i class="bi bi-trash-fill" style="color: #ffffff !important; font-size: 15px;"></i>
+                                </a>
                             </div>
                             @endif
-                            <a  href="../image/posters/{{$movie->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bx bx-zoom-in"></i></a>
-                            <a href="#" id="{{$movie->id}}" onclick="view{{$movie->id}}()" data-bs-toggle="modal" data-bs-target="#viewTrailer{{$movie->id}}" title="Play Trailer"><i class="bx bx-play"></i></a>
-                            {{-- <form action="/"></form> --}}
-                            <input type="text" id="reserver" name="reserver" style="display: none;">
+                        @endauth
 
-                            <a href="/detailM/{{$movie->id}}" title="More Details"><i class="bx bx-movie-play"></i></a>
+                        <label class="movie_title">{{$movie->title}}</label>
+                        <img src="../image/posters/{{$movie->poster}}" class="img-fluid" alt="" style="max-height: 260px; min-height: 260px; width: 100%; object-fit: cover;">
+                        <div class="portfolio-links">
+                            <a href="../image/posters/{{$movie->poster}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bi bi-zoom-in"></i></a>
+                            <a href="#" id="{{$movie->id}}" onclick="view{{$movie->id}}()" data-bs-toggle="modal" data-bs-target="#viewTrailer{{$movie->id}}" title="Play Trailer"><i class="bi bi-play-fill"></i></a>
+                            <input type="text" id="reserver" name="reserver" style="display: none;">
+                            <a href="/detailM/{{$movie->id}}" title="More Details"><i class="bi bi-info-circle"></i></a>
                         </div>
                     </div>
-                    <div class="">
-                    <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Views"><i class="bx bx-show" style="color: #3287cc"></i>   <strong id="v{{$movie->id}}">{{$movie->views}}</strong></label>
-                    <label class="p-2" title="">
-                        <a href="/like/{{$movie->id}}/movie" style="color: #3287cc" title="Likes">
-                            @if (App\Http\Controllers\movieController::userLike($movie->id))
-                                <i class=" bx bxs-like"></i>
-                            @else
-                                <i class=" bx bx-like"></i>
-                            @endif
-                        </a>  <strong>{{$movie->likes}}</strong></label>
-                        @if (App\Http\Controllers\ticketController::tickets($movie->id))
-                            <label class="p-2" title=""><i class="bi bi-ticket-fill" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill" style="color: #3287cc"></a>
-                            @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                                <a href="/cancelTicket/{{$movie->id}}/movie" title="Cancel Ticket" class="bi bi-x-circle-fill" style="color: #ec7168"></a>
-                            @endif
-                        @else
-                            <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                            @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                                <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
-                            @endif
+                    <div class="d-flex align-items-center justify-content-between flex-wrap pt-2 px-1">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="p-1 mb-0" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Views"><i class="bi bi-eye" style="color: #f59e0b"></i> <strong id="v{{$movie->id}}">{{$movie->views}}</strong></label>
+                            <label class="p-1 mb-0" title="Likes">
+                                <a href="/like/{{$movie->id}}/movie" style="color: #f59e0b" title="Likes">
+                                    @auth
+                                        @if (App\Http\Controllers\movieController::userLike($movie->id))
+                                            <i class="bi bi-hand-thumbs-up-fill"></i>
+                                        @else
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        @endif
+                                    @else
+                                        <i class="bi bi-hand-thumbs-up"></i>
+                                    @endauth
+                                </a> <strong>{{$movie->likes}}</strong>
                             </label>
-                        @endif
+                            @auth
+                                @if (App\Http\Controllers\ticketController::tickets($movie->id))
+                                    <label class="p-1 mb-0" title="Purchased Ticket">
+                                        <i class="bi bi-ticket-perforated-fill" style="color: #f59e0b"></i> <strong>{{$movie->tickets}}</strong>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill text-success" title="View Ticket"></a>
+                                        <a href="/cancelTicket/{{$movie->id}}/movie" title="Cancel Ticket" class="bi bi-x-circle-fill text-danger ms-1"></a>
+                                    </label>
+                                @endif
+                            @endauth
+                        </div>
+                        <div>
+                            <a href="/seats/{{$movie->id}}" class="get-btn btn-sm" style="border-radius: 50px; padding: 4px 12px; font-size: 12.5px; text-decoration: none; font-weight: 600;" type="submit">Buy Ticket</a>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -231,7 +238,7 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <?php  echo "<table class='pl-5' style='width: 300px; margin: auto;'>
                             <tbody style='width: 300px;'>
                                 <tr style='width: 300px;'>
-                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Cinima Rukiya</h5>
+                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Alem Cinema</h5>
                                 </tr>
                                 <tr style='width: 50%; margin: auto;'>
                                     <div>
@@ -328,7 +335,7 @@ tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <table class="pl-5" style="width: 95%; margin: auto;">
                     <tbody>
                         <tr>
-                            <h5 style="text-align: center; font-weight: 600;">Cinima Rukiya</h5>
+                            <h5 style="text-align: center; font-weight: 600;">Alem Cinema</h5>
                         </tr>
                         <tr style="width: 100%; margin: auto;">
                             <div>

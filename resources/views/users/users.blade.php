@@ -25,14 +25,12 @@
     <!-- ======= Breadcrumbs Section ======= -->
     <section class="breadcrumbs">
       <div class="container">
-        <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-          <h2 class="d-flex">Users
-            <a title="Add New User" class="ml-2 d-flex" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
-                <i class="" style="color: #fff">A</i>
-                <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                </div>
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="mb-0">Users</h2>
+            <a title="Add New User" class="get-btn btn-sm d-inline-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
+                <i class="bi bi-plus-lg"></i> Add New User
             </a>
-          </h2>
+          </div>
           <ol>
             <li><a href="/">Home</a></li>
             <li>Users</li>
@@ -91,12 +89,12 @@
                         @if (Auth::user()->role == "Admin" && $user->role != 'Admin')
                         @if ($user->role != 'User')
                             <a href="#" data-bs-toggle="modal" data-bs-target="#viewuser{{$user->id}}" title="Edit User"
-                                style="border:none; border-radius:4px; text-decoration: none; height: 25px; margin-right: 8px;"
-                                class="get-btn  btn-sm pr-2 pl-2 bx bx-show"></a>
+                                style="border:none; border-radius:6px; text-decoration: none; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px;"
+                                class="get-btn btn-sm bx bx-show"></a>
                         @endif
                             <a href="deleteUser/{{$user->id}}" title="Delete User"
                               class="btn btn-danger btn-sm bi bi-trash-fill"
-                              style="height: 25px;"
+                              style="border:none; border-radius:6px; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
                               onclick="return deleteUser();"></a>
                         @endif
 

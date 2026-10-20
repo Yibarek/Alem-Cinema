@@ -29,15 +29,14 @@
       <div class="container">
 
         <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-          <h2 class="d-flex">Coupons
-            @if (Auth::user()->role == 'Admin')
-                <a title="Add New User" class="ml-2 d-flex" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
-                    <i class="" style="color: #fff">A</i>
-                    <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                    </div>
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="mb-0">Coupons</h2>
+            @if (Auth::user()->role == 'Admin' || Auth::user()->role == 'Ticket Controller')
+                <a title="Add New Coupon" class="get-btn btn-sm d-inline-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#adduser">
+                    <i class="bi bi-plus-lg"></i> Add New Coupon
                 </a>
             @endif
-          </h2>
+          </div>
           <ol>
             <li><a href="/">Home</a></li>
             <li>Coupons</li>
@@ -90,14 +89,13 @@
                       <td>{{ $coupon->cb_date }}</td>
                       <td>
                         @if (Auth::user()->role == "Admin")
-                        {{-- @if (Auth::user()->role == "Admin" && $coupon->role != 'Admin') --}}
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewcoupon{{$coupon->id}}" title="Edit User"
-                          style="border:none; border-radius:4px; text-decoration: none; height: 25px; margin-right: 8px;"
-                          class="get-btn  btn-sm pr-2 pl-2 bx bx-show"></a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewcoupon{{$coupon->id}}" title="Edit Coupon"
+                          style="border:none; border-radius:6px; text-decoration: none; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-right: 6px;"
+                          class="get-btn btn-sm bx bx-show"></a>
 
                           <a href="deleteCoupon/{{$coupon->id}}" title="Delete Coupon"
                               class="btn btn-danger btn-sm bi bi-trash-fill"
-                              style="height: 25px;"
+                              style="border:none; border-radius:6px; height: 26px; width: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;"
                               onclick="return deleteCoupon();"></a>
                         @endif
 

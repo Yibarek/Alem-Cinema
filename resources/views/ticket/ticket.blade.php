@@ -28,13 +28,10 @@
     <section class="breadcrumbs">
       <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center" style="margin-top: 10px;">
-          <h2 class="d-flex">Tickets
-            @if (Auth::user()->role == 'Ticket Controller')
-                <a title="Add New User" class="ml-2 d-flex" href="#" data-bs-toggle="modal" data-bs-target="#createTicket">
-                    <i class="" style="color: #fff">A</i>
-                    <div style="margin-top: 1px;"><i class="mt-3 rounded-circle get-btn-circle ri ri-add-fill"></i>
-                    </div>
+          <h2 class="d-flex align-items-center">Tickets
+            @if (Auth::user()->role == 'Ticket Controller' || Auth::user()->role == 'Admin')
+                <a title="Add New Ticket" class="get-btn btn-sm d-inline-flex align-items-center gap-2 ms-3" style="border-radius: 50px; padding: 6px 16px; font-size: 13.5px; font-weight: 700; text-decoration: none;" href="#" data-bs-toggle="modal" data-bs-target="#createTicket">
+                    <i class="bi bi-plus-lg" style="font-size: 14px; font-weight: 800;"></i> Add New Ticket
                 </a>
             @endif
           </h2>
@@ -143,7 +140,7 @@
             <?php $i=1; ?>
             <div class="modal-body p-3" style=" height: 80%; margin-top: 25px;">
                 <div class="pl-5" style="width: 85%; margin: auto;">
-                    <form action="/403" method="get">
+                    <form action="/createTicket" method="POST">
                         @csrf
                     <table class="pl-5" style="width: 100%; margin: auto;">
 
@@ -223,7 +220,7 @@
                             <?php  echo "<table class='pl-5' style='width: 300px; margin: auto;'>
                                 <tbody style='width: 300px;'>
                                     <tr style='width: 300px;'>
-                                        <h5 style=' font-weight: 600;'>Cinima Rukiya</h5>
+                                        <h5 style=' font-weight: 600;'>Alem Cinema</h5>
                                     </tr>
                                     <tr style='width: 50%; margin: auto;'>
                                         <div>
@@ -320,7 +317,7 @@
                 <table class="pl-5" style="width: 95%; margin: auto;">
                     <tbody>
                         <tr>
-                            <h5 style="text-align: center; font-weight: 600;">Cinima Rukiya</h5>
+                            <h5 style="text-align: center; font-weight: 600;">Alem Cinema</h5>
                         </tr>
                         <tr style="width: 100%; margin: auto;">
                             <div>

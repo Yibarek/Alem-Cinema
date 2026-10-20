@@ -46,8 +46,8 @@
 
         <div class="row gy-4">
           <div class="" style="margin-top: -20px; margin-bottom: -10px;">
-                <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bx bx-show" style="color: #3287cc"></i> view  <strong>{{$movie->views}}</strong></label>
-                <a href="/like/{{$movie->id}}/detailM" style="color: #3287cc" title="Likes">
+                <label class="p-2" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{$movie->title}}"><i class="bx bx-show" style="color: #f59e0b"></i> view  <strong>{{$movie->views}}</strong></label>
+                <a href="/like/{{$movie->id}}/detailM" style="color: #f59e0b" title="Likes">
                     @auth
                         @if (App\Http\Controllers\movieController::userLike($movie->id))
                             <i class=" bx bxs-like"></i>
@@ -61,21 +61,23 @@
 
                 @auth
                     @if (App\Http\Controllers\ticketController::tickets($movie->id))
-                        <label class="p-2" title=""><i class="bi bi-ticket-fill" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill" style="color: #3287cc"></a>
-                        {{-- @if (App\Http\Controllers\ticketController::ticketTime($movie->title)) --}}
-                            <a href="/cancelTicket/{{$movie->id}}/welcome" title="Cancel Ticket" class="bi bi-x-circle-fill" style="color: #ec7168"> Cancel Ticket</a>
-                        {{-- @endif --}}
-                    @else
-                        <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                        {{-- @if (App\Http\Controllers\ticketController::ticketTime($movie->title)) --}}
-                            <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
-                        {{-- @endif --}}
+                        <label class="p-2" title="Purchased Ticket"><i class="bi bi-ticket-fill" style="color: #f59e0b"></i> <strong>{{$movie->tickets}}</strong>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#ticket{{App\Http\Controllers\ticketController::ticketid($movie->id)}}" class="bi bi-check-circle-fill text-success" title="View Ticket Details"></a>
+                        <a href="/cancelTicket/{{$movie->id}}/welcome" title="Cancel Ticket" class="bi bi-x-circle-fill text-danger ms-1"> Cancel Ticket</a>
+                        </label>
                     @endif
-                @else
-                <label class="p-2" title=""><i class="bi bi-ticket" style="color: #3287cc"></i>   <strong>{{$movie->tickets}}</strong>
-                    @if (App\Http\Controllers\ticketController::ticketTime($movie->title))
-                        <a href="/seats/{{$movie->id}}" class="get-btn p-1" type="submit">Buy Ticket</a>
+                @endauth
+                <a href="/seats/{{$movie->id}}" class="get-btn ms-2" style="border-radius: 50px; padding: 6px 18px; font-weight: 600; text-decoration: none;" type="submit">
+                    <i class="bi bi-ticket-perforated me-1"></i> Buy Ticket
+                </a>
+                @auth
+                    @if (Auth::user()->role == "Multimedia Specialist" || Auth::user()->role == "Admin")
+                        <a href="/editM/{{$movie->id}}" class="btn btn-sm ms-2 text-white" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50px; padding: 6px 16px; font-weight: 600; text-decoration: none;" title="Edit Movie">
+                            <i class="bi bi-pencil-square me-1" style="color: #ffffff !important;"></i> Edit
+                        </a>
+                        <a href="/deleteMovie/{{$movie->id}}" class="btn btn-sm ms-1 text-white" style="background: linear-gradient(135deg, #dc2626, #991b1b); border-radius: 50px; padding: 6px 16px; font-weight: 600; text-decoration: none;" onclick="return confirm('Are you sure you want to delete this movie?');" title="Delete Movie">
+                            <i class="bi bi-trash-fill me-1" style="color: #ffffff !important;"></i> Delete
+                        </a>
                     @endif
                 @endauth
           </div>
@@ -164,7 +166,7 @@
                         <?php  echo "<table class='pl-5' style='width: 300px; margin: auto;'>
                             <tbody style='width: 300px;'>
                                 <tr style='width: 300px;'>
-                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Cinima Rukiya</h5>
+                                    <h5 style=' font-weight: 600; margin-left: 100px;'>           Alem Cinema</h5>
                                 </tr>
                                 <tr style='width: 50%; margin: auto;'>
                                     <div>
@@ -261,7 +263,7 @@
             <table class="pl-5" style="width: 95%; margin: auto;">
                     <tbody>
                         <tr>
-                            <h5 style="text-align: center; font-weight: 600;">Cinima Rukiya</h5>
+                            <h5 style="text-align: center; font-weight: 600;">Alem Cinema</h5>
                         </tr>
                         <tr style="width: 100%; margin: auto;">
                             <div>
